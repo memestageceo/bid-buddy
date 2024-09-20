@@ -5,3 +5,7 @@ export const user = pgTable('user', {
 	name: text('name').notNull(),
 	age: integer('age')
 });
+
+export const bids = pgTable('bb_bids', {
+	id: serial('id').primaryKey()
+});
