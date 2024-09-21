@@ -1,34 +1,28 @@
 import type { Actions } from '@sveltejs/kit';
 import { database } from '$lib/server/db';
-import { bids } from '$lib/server/db/schema';
+import { bids, items } from '$lib/server/db/schema';
+import { signIn } from '../auth';
 
 export const load = async () => {
-	const users = await database.query.bids.findMany();
+	const items = await database.query.items.findMany();
 	return {
-		message: 'Hello World',
-		users
+		items
 	};
 };
 
 export const actions: Actions = {
-	// places a bid in database
-	placeBid: async ({ request }) => {
-		const data = await request.formData();
-		const bidAmount = String(data.get('bidAmount'));
-		// action to insert bid with amount in the database
-		try {
-			const newBid = await database.insert(bids).values({});
-			return {
-				success: true,
-				message: `Bid placed successfully with amount: ${bidAmount}`,
-				bid: newBid[0]
-			};
-		} catch (error) {
-			console.error('Error placing bid:', error);
-			return {
-				success: false,
-				message: 'Failed to place bid. Please try again.'
-			};
-		}
+	// add item to database
+	addItem: async ({ request, locals }) => {
+		const session = await locals.auth();
+
+		if (!session) return null;
+		if (!session.user) return null;
+		const formData = await request.formData();
+		const itemName = String(formData.get('name'));
+
+		await database.insert(items).values({
+			name: itemName,
+			userId: session.user.id
+		});
 	}
 };
