@@ -1,9 +1,9 @@
 <script lang="ts">
 	import * as Table from '$lib/components/ui/table/index';
-	import type { items } from '$lib/server/db/schema';
+	// import type { items } from '$lib/server/db/schema';
 	// import type { PageData } from './$types';
 
-	let { items: itemArr }: { itemArr: typeof items } = $props();
+	let { items } = $props();
 </script>
 
 <div class="mt-8">

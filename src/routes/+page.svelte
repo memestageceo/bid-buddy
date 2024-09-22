@@ -13,8 +13,6 @@
 	import { SignIn } from '@auth/sveltekit/components';
 	import Auth from '$lib/custom/Auth.svelte';
 
-	let bidAmount = $state(0);
-
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 </script>
 
@@ -24,9 +22,9 @@
 	<img src={user?.image} alt="avatar of {user?.name}" />
 {/if}
 
-<form class="mx-auto mt-8 max-w-sm" use:enhance method="post" action="?/placeBid">
+<form class="mx-auto mt-8 max-w-sm" use:enhance method="post" action="?/addItem">
 	<div class="mb-4">
-		<Label for="bidAmount" class="mb-2 block text-sm font-bold text-gray-700">Bid Amount</Label>
+		<Label for="name" class="mb-2 block text-sm font-bold text-gray-700">Name</Label>
 		<Input
 			type="text"
 			id="name"

@@ -11,8 +11,7 @@ import {
 export const bids = pgTable('bb_bids', {
 	id: serial('id').primaryKey()
 });
-
-export const users = pgTable('bb_user', {
+export const users = pgTable('user', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
@@ -23,12 +22,12 @@ export const users = pgTable('bb_user', {
 });
 
 export const accounts = pgTable(
-	'bb_account',
+	'account',
 	{
 		userId: text('userId')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		type: text('type').notNull(),
+		type: text('type').$type<AdapterAccountType>().notNull(),
 		provider: text('provider').notNull(),
 		providerAccountId: text('providerAccountId').notNull(),
 		refresh_token: text('refresh_token'),
@@ -46,7 +45,7 @@ export const accounts = pgTable(
 	})
 );
 
-export const sessions = pgTable('bb_session', {
+export const sessions = pgTable('session', {
 	sessionToken: text('sessionToken').primaryKey(),
 	userId: text('userId')
 		.notNull()
@@ -55,7 +54,7 @@ export const sessions = pgTable('bb_session', {
 });
 
 export const verificationTokens = pgTable(
-	'bb_verificationToken',
+	'verificationToken',
 	{
 		identifier: text('identifier').notNull(),
 		token: text('token').notNull(),
@@ -71,15 +70,15 @@ export const verificationTokens = pgTable(
 export const authenticators = pgTable(
 	'authenticator',
 	{
-		credentialID: text('credential_id').notNull().unique(),
-		userId: text('user_id')
+		credentialID: text('credentialID').notNull().unique(),
+		userId: text('userId')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		providerAccountId: text('provider_account_id').notNull(),
-		credentialPublicKey: text('credential_public_key').notNull(),
+		providerAccountId: text('providerAccountId').notNull(),
+		credentialPublicKey: text('credentialPublicKey').notNull(),
 		counter: integer('counter').notNull(),
-		credentialDeviceType: text('credential_device_type').notNull(),
-		credentialBackedUp: boolean('credential_backed_up').notNull(),
+		credentialDeviceType: text('credentialDeviceType').notNull(),
+		credentialBackedUp: boolean('credentialBackedUp').notNull(),
 		transports: text('transports')
 	},
 	(authenticator) => ({
@@ -88,11 +87,3 @@ export const authenticators = pgTable(
 		})
 	})
 );
-
-export const items = pgTable('bb_item', {
-	id: serial('id').primaryKey(),
-	userId: text('userId')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	name: text('name').notNull()
-});
